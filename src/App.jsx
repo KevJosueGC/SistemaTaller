@@ -1,135 +1,83 @@
+import React, { useState } from "react";
 import {
-  InfoCircleFilled,
-  PlusCircleFilled,
-  SearchOutlined,
+  DesktopOutlined,
+  FileOutlined,
+  PieChartOutlined,
+  TeamOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
-import {
-  Button,
-  Card,
-  Col,
-  Container,
-  Form,
-  InputGroup,
-  Modal,
-  OverlayTrigger,
-  Row,
-  Stack,
-  Tooltip,
-} from "react-bootstrap";
-import TablaVehiculos from "./components/Tabla/TablaVehiculos";
-
-function App() {
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-  const tooltip = (
-    <Tooltip id="tooltip">Solo debe ingresar valor numéricos</Tooltip>
-  );
-  const HandleEventInputName = (event) => {
-    setName(event.target.value);
+import { Breadcrumb, Layout, Menu, theme } from "antd";
+import Vehiculos from "./components/Tabla/Vehiculos";
+import { Link, Route, Routes } from "react-router-dom";
+import Categoria from "./components/Categorias/Categoria";
+const { Header, Content, Footer, Sider } = Layout;
+function getItem(label, key, icon, children) {
+  return {
+    key,
+    icon,
+    children,
+    label,
   };
-
-  const HandleClickSearch = () => {
-    console.log(name);
-    setName("");
-  };
-  const [name, setName] = useState("");
-
+}
+const items = [
+  getItem("Option 1", "1", <PieChartOutlined />),
+  getItem("Option 2", "2", <DesktopOutlined />),
+  getItem("User", "sub1", <UserOutlined />, [
+    getItem("Tom", "3"),
+    getItem("Bill", "4"),
+    getItem("Alex", "5"),
+  ]),
+  getItem("Team", "sub2", <TeamOutlined />, [
+    getItem("Team 1", "6"),
+    getItem("Team 2", "8"),
+  ]),
+  getItem("Files", "9", <FileOutlined />),
+];
+const App = () => {
+  const [collapsed, setCollapsed] = useState(false);
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
   return (
-    <>
-      <Container className="fondo-componente">
-        {/* FILA PARA EL TITULO */}
-        <Row
+    <Layout
+      style={{
+        minHeight: "100vh",
+      }}
+    >
+      <Sider
+        collapsible
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
+      >
+        <div className="demo-logo-vertical" />
+        <Menu
+          theme="dark"
+          defaultSelectedKeys={["1"]}
+          mode="inline"
+          items={[
+            {key: 1, icon: <UserOutlined/>, label: <Link to="/">Vehiculos</Link>  },
+            {key: 2, icon: <UserOutlined/>, label: <Link to="categorias">Categorias</Link>  },
+          ]}
+        />
+      </Sider>
+      <Layout>
+        <Content className="fondo-componente">
+          <Routes>
+            <Route path="/">
+              <Route index element={<Vehiculos />} />
+              <Route path="categorias" element={<Categoria />} />
+            </Route>
+          </Routes>
+        </Content>
+        <Footer
           style={{
             textAlign: "center",
-            color: "#001d66",
-            fontFamily: "Segoe UI",
           }}
         >
-          <Col>
-            <h1>MANTENIMIENTO DE VEHICULOS</h1>
-          </Col>
-        </Row>
-
-        {/* FILA PARA EL CONTROL DE BUSQUEDA Y CREAR UN NUEVO VEHICULO */}
-        <Row>
-          <Col xs={3}>
-            <Form>
-              <InputGroup className="mb-3">
-                <Form.Control
-                  className="outline-none"
-                  placeholder="Buscar tarjeta de circualción"
-                  aria-label="Tarjeta de circulación"
-                  aria-describedby="basic-addon2"
-                  onChange={HandleEventInputName}
-                  value={name}
-                />
-                <Button variant="primary" onClick={HandleClickSearch}>
-                  <SearchOutlined />
-                </Button>
-              </InputGroup>
-            </Form>
-          </Col>
-          {/* COLUMNA PARA MOSTRAR EL ICONO DE INFORMACIÓN*/}
-          <Col style={{ margin: 0, padding: 0, alignContent: "flex-start" }}>
-            <OverlayTrigger placement="right" overlay={tooltip}>
-              <InfoCircleFilled style={{ color: "green" }} />
-            </OverlayTrigger>
-          </Col>
-          <Col xs={8}>
-            <Button variant="primary" onClick={handleShow}>
-              <PlusCircleFilled />
-            </Button>
-          </Col>
-        </Row>
-
-        {/* FILA PARA MOSTRAR LOS DATOS UTILIZANDO UNA TABLA */}
-        <Row>
-          <Col>
-            <TablaVehiculos />
-          </Col>
-        </Row>
-        {/* FILA PARA MOSTRAR LOS DATOS UTILIZANDO UNA TABLA */}
-      {/*   <Row>
-          <Col>
-            <Container>
-              <h1>AQUI VA A IR LA PAGINACIÓN</h1>
-            </Container>
-          </Col>
-        </Row> */}
-      </Container>
-      <Modal
-        show={show}
-        onHide={handleClose}
-        style={{ width: "100%" }}
-        size="xl"
-      >
-        <Card>
-          <Card.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
-          </Card.Header>
-          <Card.Body>
-            <Modal.Body>
-              Woohoo, you are reading this text in a modal!
-            </Modal.Body>
-          </Card.Body>
-          <Card.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-            <Button
-              variant="primary"
-              onClick={handleClose}
-              style={{ marginLeft: 5 }}
-            >
-              Save Changes
-            </Button>
-          </Card.Footer>
-        </Card>
-      </Modal>
-    </>
+          Derechos reservados ©{new Date().getFullYear()}
+        </Footer>
+      </Layout>
+    </Layout>
   );
-}
-
+};
 export default App;
